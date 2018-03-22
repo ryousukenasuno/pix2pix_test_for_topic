@@ -1,0 +1,2 @@
+ #python3 train.py --dataroot ./datasets/pasta --name pasta_pix2pix --model pix2pix --which_model_netG unet_256 --which_direction AtoB --lambda_A 100 --dataset_mode aligned --no_lsgan --norm batch --pool_size 0 --input_nc 1 --output_nc 1  --batchSize 8 --lr 0.01 
+ python3 train.py --dataroot ./datasets/pasta --name pasta_pix2pix --model pix2pix --which_model_netG unet_256 --which_model_netD n_layers --which_direction AtoB --lambda_A 100 --dataset_mode aligned --no_lsgan --norm batch --pool_size 0 --input_nc 1 --output_nc 1  --batchSize 8 --lr 0.01 

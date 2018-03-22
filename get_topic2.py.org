@@ -1,0 +1,47 @@
+import sys
+import rospy
+import cv2
+import message_filters
+import numpy as np
+from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from geometry_msgs.msg import Twist
+from cv_bridge import CvBridge, CvBridgeError
+from datetime import datetime
+
+class get_images:
+    def __init__(self):
+        self.bridge = CvBridge()
+        self.image_pub = rospy.Publisher("/test/depth/image_raw",Image)
+        self.image_sub = rospy.Subscriber("/camera/depth/image_raw",Image,self.callback)
+
+    #def callback(self, rgb_data, depth_data):
+    def callback(self, depth_data):
+        try:
+            depth_image = self.bridge.imgmsg_to_cv2(depth_data, "32FC1")
+        except CvBridgeError as e:
+            print(e)
+	try:
+            depth_image = np.uint16(depth_image)
+            self.image_pub.publish(self.bridge.cv2_to_imgmsg(depth_image, "16UC1"))
+        except CvBridgeError as e:
+            print(e)
+
+
+
+def main(args):
+    fp = get_images()
+    rospy.init_node('get_images', anonymous=True)
+    #image_sub = message_filters.Subscriber("/camera/rgb/image_raw", Image)
+    #depth_sub = message_filters.Subscriber("/camera/depth/image_raw", Image)
+
+    #ts = message_filters.ApproximateTimeSynchronizer([image_sub, depth_sub], 1, 0.5)
+    #ts = message_filters.ApproximateTimeSynchronizer([depth_sub], 1, 0.5)
+    #ts.registerCallback(fp.callback)
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        print("Shutting down")
+
+if __name__ == '__main__':
+    main(sys.argv)
